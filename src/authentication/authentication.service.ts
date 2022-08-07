@@ -46,12 +46,6 @@ export class AuthenticationService {
       await this._emailConfirmationService.sendVeryficationLink(dto.email);
       return await this._userService.create(dto);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        return new HttpException(
-          `${error.message}`,
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
-      }
       throw new HttpException(SMT_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -64,7 +58,7 @@ export class AuthenticationService {
       const user = await this._userService.getByEmail(dto.email);
 
       if (!user) {
-        throw new HttpException(
+        return new HttpException(
           DONT_EMAIL_OR_NOT_REGISTER,
           HttpStatus.UNPROCESSABLE_ENTITY,
         );
@@ -73,17 +67,23 @@ export class AuthenticationService {
       const isPasswordCorrect = await compare(dto.password, user.password);
 
       if (!isPasswordCorrect) {
-        throw new HttpException(BAD_PASSWORD, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new HttpException(BAD_PASSWORD, HttpStatus.UNPROCESSABLE_ENTITY);
       }
 
       const jwt = await this.addJWT(user.id);
 
-      res.cookie('jwt', jwt, { httpOnly: true });
+      res.cookie('jwt', jwt, { httpOnly: true, maxAge: 7200 });
 
       return {
         username: user.username,
         message: 'Login success',
         success: true,
+        jwt: jwt,
+        role: user.role,
+        age: user.age,
+        phone: user.phone,
+        email: user.email,
+        confirm: user.isEmailConfirmed,
       };
     } catch (error: unknown) {
       if (error instanceof Error) {

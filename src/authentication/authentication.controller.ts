@@ -21,7 +21,6 @@ import { CurrentUser } from 'src/user/decorators/user.decorator';
 import { UserRequestDTO } from 'src/user/dto/user-request.dto';
 import { EmailConfirmationService } from './email/emailConfirmation.service';
 
-@Serialize(UserRequestDTO)
 @Controller('auth')
 export class AuthenticationController {
   constructor(
@@ -29,6 +28,7 @@ export class AuthenticationController {
     private readonly _emailConfirmationService: EmailConfirmationService,
   ) {}
 
+  @Serialize(UserRequestDTO)
   @HttpCode(201)
   @Post('register')
   async register(@Body() dto: CreateUserDTO): Promise<User | HttpException> {
@@ -46,6 +46,7 @@ export class AuthenticationController {
     return login;
   }
 
+  @Serialize(UserRequestDTO)
   @HttpCode(200)
   @Post('logout')
   @UseGuards(JwtAuthGuard)

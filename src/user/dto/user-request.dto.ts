@@ -21,4 +21,19 @@ export class UserRequestDTO {
 
   @Expose()
   success?: boolean;
+
+  @Expose()
+  role?: string;
+
+  @Expose()
+  age?: number;
+
+  @Expose()
+  phone?: string;
+
+  @Expose()
+  email?: string;
+
+  @Expose()
+  confirm?: boolean;
 }
