@@ -32,7 +32,7 @@ export class User {
   role: Role;
 
   @Column()
-  phone: 'string';
+  phone: string;
 
   @Column({ default: false })
   isEmailConfirmed: boolean;

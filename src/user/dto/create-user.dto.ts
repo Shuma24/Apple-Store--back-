@@ -35,5 +35,5 @@ export class CreateUserDTO {
 
   @IsPhoneNumber('UA')
   @IsNotEmpty()
-  phone: 'string';
+  phone: string;
 }

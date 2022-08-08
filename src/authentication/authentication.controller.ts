@@ -1,6 +1,8 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpException,
   Post,
@@ -36,6 +38,7 @@ export class AuthenticationController {
     return user;
   }
 
+  @Serialize(UserRequestDTO)
   @HttpCode(200)
   @Post('login')
   async login(
@@ -72,5 +75,14 @@ export class AuthenticationController {
       result,
       status: `Емейл підтверджено, тепер можна логінитись на сайті`,
     };
+  }
+
+  @HttpCode(200)
+  @Get('whoiam')
+  @UseGuards(JwtAuthGuard)
+  async checkUser(
+    @CurrentUser('email') email: string,
+  ): Promise<HttpException | UserRequestDTO> {
+    return await this._authService.checkUser(email);
   }
 }
